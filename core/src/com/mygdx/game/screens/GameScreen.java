@@ -17,19 +17,21 @@ public class GameScreen implements Screen {
     private Texture tank1;
     private float tank1x, tank1y, tank2x;
     private final TankStars game;
-    private ArrayList<Bullets> bullets1;
-    private ArrayList<Bullets> bulletsToRemove1;
+    private ArrayList<Bullets> bullets;
+    private ArrayList<Bullets> bulletsToRemove;
     private float shootTimer = 0;
-    private Tank tankobj1, tankobj2;
+    private Tank tankobj1, tankobj2, tankToBeHit, firingTank;
     public GameScreen(TankStars game) {
         this.game = game;
         tank1x = 0;
         tank1y = 0;
         tank2x = Gdx.graphics.getWidth() - 500;
-        bullets1 = new ArrayList<Bullets>();
-        bulletsToRemove1 = new ArrayList<Bullets>();
+        bullets = new ArrayList<Bullets>();
+        bulletsToRemove = new ArrayList<Bullets>();
         tankobj1 = new Tank(tank1x, game, 1);
         tankobj2 = new Tank(tank2x, game,2);
+        tankToBeHit = tankobj2;
+        firingTank = tankobj1;
     }
 
     @Override
@@ -43,65 +45,86 @@ public class GameScreen implements Screen {
         // moving bullets
         if (Gdx.input.isKeyPressed(Input.Keys.SPACE) && shootTimer >= SHOOT_WAIT_TIME) {
             shootTimer = 0;
-            bullets1.add(new Bullets(tank1x + 300,1));
-        }
-        else if (Gdx.input.isKeyPressed(Input.Keys.B) && shootTimer >= SHOOT_WAIT_TIME) {
-            shootTimer = 0;
-            bullets1.add(new Bullets(tank2x + 300, 2));
+            if (tankToBeHit == tankobj2) {
+                bullets.add(new Bullets(firingTank.getX() + 200, 1));
+            } else {
+                bullets.add(new Bullets(firingTank.getX() + 200, 2));
+            }
+
         }
 
+
         // update bullets
-        for (Bullets bullet : bullets1) {
+        for (Bullets bullet : bullets) {
             bullet.update(delta);
             if (bullet.remove) {
-                bulletsToRemove1.add(bullet);
+                bulletsToRemove.add(bullet);
             }
         }
-        bullets1.removeAll(bulletsToRemove1);
+        bullets.removeAll(bulletsToRemove);
 
 
         // after all the updates, check for collisions
-        // for tank1
-        for (Bullets bullet : bullets1) {
-            if (bullet.getCollisionRect().collidesWith(tankobj1.getCollisionRect())) {
-                bulletsToRemove1.add(bullet);
-                if (tankobj1.getHealth() > 0) {
-                    tankobj1.setHealth(tankobj1.getHealth() - 1);
+        for (Bullets bullet : bullets) {
+            if (bullet.getCollisionRect().collidesWith(tankToBeHit.getCollisionRect())) {
+                bulletsToRemove.add(bullet);
+                if (tankToBeHit.getHealth() > 0) {
+                    tankToBeHit.setHealth(tankToBeHit.getHealth() - 1);
                 }
-                System.out.println("health of tank1 " + tankobj1.getHealth());
+                System.out.print("health of tank");
+                System.out.println(tankToBeHit.getHealth());
+                //////
+                if (tankToBeHit == tankobj1) { // need to update only firing tanks position; if tankToBeHit is tank2 now,  then tank2 was firing before
+                    tankToBeHit = tankobj2;
+                    tankToBeHit.update(delta);
+                    firingTank = tankobj1;
+                } else {
+                    tankToBeHit = tankobj1;
+                    tankToBeHit.update(delta);
+                    firingTank = tankobj2;
+                }
             }
         }
-        bullets1.removeAll(bulletsToRemove1);
-
-
-        // for tank2
-        for (Bullets bullet : bullets1) {
-            if (bullet.getCollisionRect().collidesWith(tankobj2.getCollisionRect())) {
-                bulletsToRemove1.add(bullet);
-                if (tankobj2.getHealth() > 0) {
-                    tankobj2.setHealth(tankobj2.getHealth() - 1);
-                }
-                System.out.println("health of tank2 " + tankobj2.getHealth());
-            }
-        }
-        bullets1.removeAll(bulletsToRemove1);
+        bullets.removeAll(bulletsToRemove);
 
 
         ScreenUtils.clear(1, 0, 0, 1);
         game.batch.begin();
-        for (Bullets bullet : bullets1) {
+        // render bullets
+        for (Bullets bullet : bullets) {
             bullet.render(game.batch);
         }
 
-        tankobj1.update(delta);
-        tankobj2.update(delta);
         tankobj1.render();
-        // to render tank2
         tankobj2.render();
-
+        if (Gdx.input.isKeyPressed(Input.Keys.LEFT))
+        {
+            firingTank.setX(firingTank.getX() - SPEED * Gdx.graphics.getDeltaTime());
+            if (firingTank.getX() < 0) // boundary so that tank doesn't go out of screen
+            {
+                firingTank.setX(0);
+            }
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT))
+        {
+            firingTank.setX(firingTank.getX() + SPEED * Gdx.graphics.getDeltaTime());
+            if (firingTank.getX() > TankStars.WIDTH - firingTank.getTankTexture().getWidth())
+            {
+                firingTank.setX(TankStars.WIDTH - firingTank.getTankTexture().getWidth());
+            }
+        }
 
         game.batch.end();
 
+    }
+
+    @Override
+    public String toString() {
+        if (tankToBeHit == tankobj2) {
+            return "tank2";
+        } else {
+            return "tank1";
+        }
     }
 
     @Override

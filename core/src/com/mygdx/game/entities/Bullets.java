@@ -9,7 +9,7 @@ import com.mygdx.game.tools.Collision;
 public class Bullets {
     public static final int BULLET_SPEED = 400;
     public static final int defaultY = 300; // need to change this as y is constant
-    private static Texture bulletTexture ;
+    private Texture bulletTexture ;
     private float x,y;
     private int val;
     public boolean remove = false;
@@ -19,7 +19,6 @@ public class Bullets {
         this.y = defaultY;
         this.val = val;
         if (bulletTexture == null){
-//            bulletTexture = new Texture("bullet.png");
             if (val == 1){
                 bulletTexture = new Texture("bullet.png");
             }
@@ -34,7 +33,7 @@ public class Bullets {
     public void update(float delta){
         if (val == 1){
             x += BULLET_SPEED * delta;
-            if (x > Gdx.graphics.getWidth()){
+            if (x > Gdx.graphics.getWidth()){ // changed this
                 remove = true;
             }
 
