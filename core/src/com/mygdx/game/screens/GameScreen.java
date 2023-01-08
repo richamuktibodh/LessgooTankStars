@@ -57,36 +57,36 @@ public class GameScreen implements Screen {
         // update bullets
         for (Bullets bullet : bullets) {
             bullet.update(delta);
-            if (bullet.remove) {
-                bulletsToRemove.add(bullet);
-            }
+//            if (bullet.remove) {
+//                bulletsToRemove.add(bullet);
+//            }
+
         }
-        bullets.removeAll(bulletsToRemove);
+//        bullets.removeAll(bulletsToRemove);
 
 
         // after all the updates, check for collisions
-        for (Bullets bullet : bullets) {
-            if (bullet.getCollisionRect().collidesWith(tankToBeHit.getCollisionRect())) {
-                bulletsToRemove.add(bullet);
-                if (tankToBeHit.getHealth() > 0) {
-                    tankToBeHit.setHealth(tankToBeHit.getHealth() - 1);
-                }
-                System.out.print("health of tank");
-                System.out.println(tankToBeHit.getHealth());
-                //////
-                if (tankToBeHit == tankobj1) { // need to update only firing tanks position; if tankToBeHit is tank2 now,  then tank2 was firing before
-                    tankToBeHit = tankobj2;
-                    tankToBeHit.update(delta);
-                    firingTank = tankobj1;
-                } else {
-                    tankToBeHit = tankobj1;
-                    tankToBeHit.update(delta);
-                    firingTank = tankobj2;
-                }
-            }
-        }
-        bullets.removeAll(bulletsToRemove);
-
+//        for (Bullets bullet : bullets) {
+//            if (bullet.getCollisionRect().collidesWith(tankToBeHit.getCollisionRect())) {
+//                bulletsToRemove.add(bullet);
+//                if (tankToBeHit.getHealth() > 0) {
+//                    tankToBeHit.setHealth(tankToBeHit.getHealth() - 1);
+//                }
+//                System.out.print("health of tank");
+//                System.out.println(tankToBeHit.getHealth());
+//                //////
+//                if (tankToBeHit == tankobj1) { // need to update only firing tanks position; if tankToBeHit is tank2 now,  then tank2 was firing before
+//                    tankToBeHit = tankobj2;
+//                    tankToBeHit.update(delta);
+//                    firingTank = tankobj1;
+//                } else {
+//                    tankToBeHit = tankobj1;
+//                    tankToBeHit.update(delta);
+//                    firingTank = tankobj2;
+//                }
+//            }
+//        }
+//        bullets.removeAll(bulletsToRemove);
 
         ScreenUtils.clear(1, 0, 0, 1);
         game.batch.begin();
@@ -94,28 +94,25 @@ public class GameScreen implements Screen {
         for (Bullets bullet : bullets) {
             bullet.render(game.batch);
         }
-
         tankobj1.render();
         tankobj2.render();
-        if (Gdx.input.isKeyPressed(Input.Keys.LEFT))
-        {
-            firingTank.setX(firingTank.getX() - SPEED * Gdx.graphics.getDeltaTime());
-            if (firingTank.getX() < 0) // boundary so that tank doesn't go out of screen
-            {
-                firingTank.setX(0);
-            }
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT))
-        {
-            firingTank.setX(firingTank.getX() + SPEED * Gdx.graphics.getDeltaTime());
-            if (firingTank.getX() > TankStars.WIDTH - firingTank.getTankTexture().getWidth())
-            {
-                firingTank.setX(TankStars.WIDTH - firingTank.getTankTexture().getWidth());
-            }
-        }
-
+//        if (Gdx.input.isKeyPressed(Input.Keys.LEFT))
+//        {
+//            firingTank.setX(firingTank.getX() - SPEED * Gdx.graphics.getDeltaTime());
+//            if (firingTank.getX() < 0) // boundary so that tank doesn't go out of screen
+//            {
+//                firingTank.setX(0);
+//            }
+//        }
+//        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT))
+//        {
+//            firingTank.setX(firingTank.getX() + SPEED * Gdx.graphics.getDeltaTime());
+//            if (firingTank.getX() > TankStars.WIDTH - firingTank.getTankTexture().getWidth())
+//            {
+//                firingTank.setX(TankStars.WIDTH - firingTank.getTankTexture().getWidth());
+//            }
+//        }
         game.batch.end();
-
     }
 
     @Override
