@@ -62,8 +62,8 @@ public class Bullets {
         else if (this.val == 2){
             xProjectile += BULLET_SPEED * delta;
             yProjectile = (xProjectile- ((10.0f/(BULLET_SPEED*BULLET_SPEED)) * (xProjectile*xProjectile)));
-            x += xProjectile;
-            x = 800-x;
+            //x += xProjectile;
+            x = x - xProjectile;
             y += yProjectile;
             if (x <0){
                 remove = true;
