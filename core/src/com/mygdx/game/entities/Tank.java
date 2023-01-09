@@ -39,11 +39,8 @@ public class Tank {
     }
 
 public void update(float delta){
-        rect.move(x,y);
-    }
 
-    public void render(){
-        game.batch.draw(tankTexture,x,0);
+        rect.move(x,y);
     }
 
     public  Texture getTankTexture() {

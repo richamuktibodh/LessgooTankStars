@@ -92,10 +92,12 @@ public class GameScreen implements Screen {
         game.batch.begin();
         // render bullets
         for (Bullets bullet : bullets) {
-            bullet.render(game.batch);
+            game.batch.draw(bullet.getBulletTexture(), bullet.getX(), bullet.getY());
         }
-        tankobj1.render();
-        tankobj2.render();
+        // drawing tanks
+        game.batch.draw(tankobj1.getTankTexture(), tankobj1.getX(), tankobj1.getY());
+        game.batch.draw(tankobj2.getTankTexture(), tankobj2.getX(), tankobj2.getY());
+
 //        if (Gdx.input.isKeyPressed(Input.Keys.LEFT))
 //        {
 //            firingTank.setX(firingTank.getX() - SPEED * Gdx.graphics.getDeltaTime());

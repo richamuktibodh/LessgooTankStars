@@ -11,7 +11,13 @@ public class Bullets {
     public static final int BULLET_SPEED = 11;
 //    public static final int defaultY = 300; // need to change this as y is constant
     private Texture bulletTexture ;
-    private float xStartingPoint,yStartingPoint, xProjectile, yProjectile,x,y;
+    private float xStartingPoint;
+    private float yStartingPoint;
+    private float xProjectile;
+    private float yProjectile;
+    private float x;
+
+    private float y;
     private int val;
     public boolean remove = false;
     private Collision rect;
@@ -66,13 +72,25 @@ public class Bullets {
 //        rect.move(x,y);
     }
 
-    public void render(SpriteBatch batch){
-        System.out.println("x: " + xProjectile + " y: " + yProjectile);
-        batch.draw(bulletTexture,x,y);
-    }
+//    public void render(SpriteBatch batch){
+//        System.out.println("x: " + xProjectile + " y: " + yProjectile);
+//        batch.draw(bulletTexture,x,y);
+//    }
 
     public Collision getCollisionRect(){
         return rect;
+    }
+
+    public  Texture getBulletTexture() {
+        return bulletTexture;
+    }
+
+    public float getX() {
+        return x;
+    }
+
+    public float getY() {
+        return y;
     }
 }
 
