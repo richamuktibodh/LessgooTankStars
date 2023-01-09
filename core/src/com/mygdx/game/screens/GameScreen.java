@@ -65,10 +65,7 @@ public class GameScreen implements Screen {
         camera.update();
         game.batch.setProjectionMatrix(camera.combined);
 
-        game.batch.begin();
-        // tanks
-        game.batch.draw(tank1Obj.getTankTexture(), tank1Obj.getX(), tank1Obj.getY());
-        game.batch.draw(tank2Obj.getTankTexture(), tank2Obj.getX(), tank2Obj.getY());
+
 
         // bullets
         shootTimer += delta;
@@ -91,10 +88,13 @@ public class GameScreen implements Screen {
             bullets.get(i).update(delta);
             bulletRects.get(i).setX(bullets.get(i).getX());
             bulletRects.get(i).setY(bullets.get(i).getY());
+            // checking if bullet is out of screen
+
+
         }
 
         // checking collision between bullets and tanks --> have to add collision with ground and bullet gone out of screen
-        // after any collision, the turn switches
+        // assuming after a collision with the tank, the turn switches
         for (int i = 0; i < bullets.size(); i++) {
             if (bulletRects.get(i).overlaps(tank)) {
                 bulletsToRemove.add(bullets.get(i));
@@ -110,26 +110,34 @@ public class GameScreen implements Screen {
 //                    dispose();
 //                }
                 System.out.println("tank health: " + tankToBeHit.getHealth());
+                if (tankToBeHit == tank1Obj) {
+                    tankToBeHit = tank2Obj;
+                    // update tankToBeHits position --> in object and rectangle
+                    firingTank = tank1Obj;
+                    tank = tank2Img;
+                }
+                else {
+                    tankToBeHit = tank1Obj;
+                    // update tankToBeHits position --> in object and rectangle
+                    firingTank = tank2Obj;
+                    tank = tank1Img;
+                }
             }
-            // condition for next persons turn
-//            if (tankToBeHit == tank1Obj) {
-//                tankToBeHit = tank2Obj;
-//                // update tankToBeHits position --> in object and rectangle
-//                firingTank = tank1Obj;
-//                tank = tank2Img;
-//            }
-//            else {
-//                tankToBeHit = tank1Obj;
-//                // update tankToBeHits position --> in object and rectangle
-//                firingTank = tank2Obj;
-//                tank = tank1Img;
-//            }
         }
         bulletRects.removeAll(bulletRectsToRemove);
         bullets.removeAll(bulletsToRemove);
 
+
+        game.batch.begin();
+//        System.out.println("in begin");
+        // drawing tanks
+        game.batch.draw(tank1Obj.getTankTexture(), tank1Obj.getX(), tank1Obj.getY());
+        game.batch.draw(tank2Obj.getTankTexture(), tank2Obj.getX(), tank2Obj.getY());
+
         //  drawing bullets
         for (Bullets bullet : bullets) {
+            System.out.println("drawing bullets");
+            System.out.println(bullet.getX());
             game.batch.draw(bullet.getBulletTexture(), bullet.getX(), bullet.getY());
         }
         game.batch.end();
