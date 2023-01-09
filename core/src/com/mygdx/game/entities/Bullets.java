@@ -29,7 +29,7 @@ public class Bullets {
         this.yProjectile = 0;
         //System.out.println("xProjectile initial: " + xProjectile + " yProjectile initial: " + yProjectile);
         // x and y are supposed to be initial tank coordinates from where bullet is shot
-        this.x = 200 ;
+        this.x = x ;
         this.y = 300 ;
 //        this.y = defaultY;
         this.val = val;
@@ -47,7 +47,7 @@ public class Bullets {
     }
 
     public void update(float delta){
-        if (val == 1){
+        if (this.val == 1){
 //            System.out.println("xProjectile update before: " + xProjectile + " yProjectile update before: " + yProjectile);
             xProjectile += BULLET_SPEED * delta;
             //yProjectile    = (xProjectile - (10.0f * (xProjectile*xProjectile))/(2.0f * (BULLET_SPEED * BULLET_SPEED))) * delta;
@@ -59,10 +59,11 @@ public class Bullets {
                 remove = true;
             }
         }
-        else if (val == 2){
-            xProjectile -= BULLET_SPEED * delta;
+        else if (this.val == 2){
+            xProjectile += BULLET_SPEED * delta;
             yProjectile = (xProjectile- ((10.0f/(BULLET_SPEED*BULLET_SPEED)) * (xProjectile*xProjectile)));
             x += xProjectile;
+            x = 800-x;
             y += yProjectile;
             if (x <0){
                 remove = true;

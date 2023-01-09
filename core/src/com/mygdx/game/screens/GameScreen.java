@@ -65,8 +65,6 @@ public class GameScreen implements Screen {
         camera.update();
         game.batch.setProjectionMatrix(camera.combined);
 
-
-
         // bullets
         shootTimer += delta;
         // moving bullets
