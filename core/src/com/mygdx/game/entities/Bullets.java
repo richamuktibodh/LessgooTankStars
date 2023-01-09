@@ -6,7 +6,7 @@ import com.badlogic.gdx.math.Vector3;
 
 
 public class Bullets {
-    public static final int BULLET_SPEED = 10;
+    public static final int BULLET_SPEED = 11;
     public static final int BULLET_WIDTH = 20;
     public static final int BULLET_HEIGHT = 20;
 //    public static final int defaultY = 300; // need to change this as y is constant

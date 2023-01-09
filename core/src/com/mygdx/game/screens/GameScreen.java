@@ -110,15 +110,16 @@ public class GameScreen implements Screen {
                 System.out.println("tank health: " + tankToBeHit.getHealth());
                 if (tankToBeHit == tank1Obj) {
                     tankToBeHit = tank2Obj;
-                    // update tankToBeHits position --> in object and rectangle
                     firingTank = tank1Obj;
                     tank = tank2Img;
+                    tank.x = tank2Obj.getX();
                 }
                 else {
                     tankToBeHit = tank1Obj;
                     // update tankToBeHits position --> in object and rectangle
                     firingTank = tank2Obj;
                     tank = tank1Img;
+                    tank.x = tank1Obj.getX();
                 }
             }
         }
@@ -137,6 +138,25 @@ public class GameScreen implements Screen {
             System.out.println("drawing bullets");
             System.out.println(bullet.getX());
             game.batch.draw(bullet.getBulletTexture(), bullet.getX(), bullet.getY());
+        }
+
+        // for movement of tanks
+        if (Gdx.input.isKeyPressed(Input.Keys.LEFT))
+        {
+            firingTank.setX(firingTank.getX() - TANK_SPEED * Gdx.graphics.getDeltaTime());
+            if (firingTank.getX() < 0) // boundary so that tank doesn't go out of screen
+            {
+                firingTank.setX(0);
+            }
+        }
+
+        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT))
+        {
+            firingTank.setX(firingTank.getX() + TANK_SPEED * Gdx.graphics.getDeltaTime());
+            if (firingTank.getX() > TankStars.WIDTH - firingTank.getTankTexture().getWidth())
+            {
+                firingTank.setX(TankStars.WIDTH - firingTank.getTankTexture().getWidth());
+            }
         }
         game.batch.end();
 
