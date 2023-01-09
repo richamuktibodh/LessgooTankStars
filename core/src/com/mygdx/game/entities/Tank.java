@@ -1,24 +1,16 @@
 package com.mygdx.game.entities;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
-import com.mygdx.game.tools.Collision;
 import com.mygdx.game.TankStars;
-
-import static com.mygdx.game.screens.GameScreen.SPEED;
 
 public class Tank {
 //    public static final int defaultY = 350; // need to change this as y is constant
 
     private Texture tankTexture ;
-
-
     private float x;
     private float y;
     public boolean remove = false;
     private TankStars game;
-    private Collision rect;
     private int val;
     private int health = 3;
 
@@ -35,13 +27,12 @@ public class Tank {
                 tankTexture = new Texture("tank2.png");
             }
         }
-        this.rect = new Collision(x,y,tankTexture.getWidth()-400,tankTexture.getHeight()-150);
     }
 
-public void update(float delta){
-
-        rect.move(x,y);
-    }
+//public void update(float delta){
+//
+//        rect.move(x,y);
+//    }
 
     public  Texture getTankTexture() {
         return tankTexture;
@@ -58,10 +49,10 @@ public void update(float delta){
         return y;
     }
 
-    public Collision getCollisionRect(){
-
-        return rect;
-    }
+//    public Collision getCollisionRect(){
+//
+//        return rect;
+//    }
 
     public int getHealth() {
         return health;

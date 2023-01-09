@@ -2,13 +2,13 @@ package com.mygdx.game.entities;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector3;
-import com.mygdx.game.tools.Collision;
 
 
 public class Bullets {
-    public static final int BULLET_SPEED = 11;
+    public static final int BULLET_SPEED = 10;
+    public static final int BULLET_WIDTH = 20;
+    public static final int BULLET_HEIGHT = 20;
 //    public static final int defaultY = 300; // need to change this as y is constant
     private Texture bulletTexture ;
     private float xStartingPoint;
@@ -20,7 +20,6 @@ public class Bullets {
     private float y;
     private int val;
     public boolean remove = false;
-    private Collision rect;
     private Vector3 position = new Vector3(), direction = new Vector3();
 
     public Bullets(float x, int val){
@@ -29,6 +28,7 @@ public class Bullets {
         this.xProjectile = 0;
         this.yProjectile = 0;
         //System.out.println("xProjectile initial: " + xProjectile + " yProjectile initial: " + yProjectile);
+        // x and y are supposed to be initial tank coordinates from where bullet is shot
         this.x = 200 ;
         this.y = 300 ;
 //        this.y = defaultY;
@@ -44,42 +44,36 @@ public class Bullets {
                 bulletTexture = new Texture("ultaBullet.png");
             }
         }
-        //this.rect = new Collision(x,y,bulletTexture.getWidth(),bulletTexture.getHeight());
     }
 
     public void update(float delta){
         if (val == 1){
-            System.out.println("xProjectile update before: " + xProjectile + " yProjectile update before: " + yProjectile);
+//            System.out.println("xProjectile update before: " + xProjectile + " yProjectile update before: " + yProjectile);
             xProjectile += BULLET_SPEED * delta;
             //yProjectile    = (xProjectile - (10.0f * (xProjectile*xProjectile))/(2.0f * (BULLET_SPEED * BULLET_SPEED))) * delta;
             yProjectile  = (xProjectile - (10.0f * (xProjectile*xProjectile))/(BULLET_SPEED * BULLET_SPEED));
             x  += xProjectile;
             y  += yProjectile;
-            System.out.println("xProjectile after update: " + xProjectile + " yProjectile after update: " + yProjectile);
+//            System.out.println("xProjectile after update: " + xProjectile + " yProjectile after update: " + yProjectile);
             if (x > Gdx.graphics.getWidth()){ // changed this
                 remove = true;
             }
         }
-//        else if (val == 2){
-//            xProjectile -= BULLET_SPEED * delta;
-//            yProjectile += (xProjectile- ((9.8f/(BULLET_SPEED*BULLET_SPEED)) * (xProjectile*xProjectile)));
-//            x = xStartingPoint + xProjectile;
-//            y = yStartingPoint + yProjectile;
-//            if (x <0){
-//                remove = true;
-//            }
-//        }
-//        rect.move(x,y);
+        else if (val == 2){
+            xProjectile -= BULLET_SPEED * delta;
+            yProjectile = (xProjectile- ((10.0f/(BULLET_SPEED*BULLET_SPEED)) * (xProjectile*xProjectile)));
+            x += xProjectile;
+            y += yProjectile;
+            if (x <0){
+                remove = true;
+            }
+        }
     }
 
 //    public void render(SpriteBatch batch){
 //        System.out.println("x: " + xProjectile + " y: " + yProjectile);
 //        batch.draw(bulletTexture,x,y);
 //    }
-
-    public Collision getCollisionRect(){
-        return rect;
-    }
 
     public  Texture getBulletTexture() {
         return bulletTexture;
