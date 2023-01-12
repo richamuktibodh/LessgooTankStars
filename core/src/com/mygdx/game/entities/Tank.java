@@ -21,18 +21,13 @@ public class Tank {
         this.val = val;
         if (tankTexture == null){
             if (val == 1){
-                tankTexture = new Texture("tank1.png");
+                tankTexture = new Texture("elements/tank1.png");
             }
             else if (val == 2){
-                tankTexture = new Texture("tank2.png");
+                tankTexture = new Texture("elements/tank2.png");
             }
         }
     }
-
-//public void update(float delta){
-//
-//        rect.move(x,y);
-//    }
 
     public  Texture getTankTexture() {
         return tankTexture;
@@ -48,11 +43,6 @@ public class Tank {
     public float getY() {
         return y;
     }
-
-//    public Collision getCollisionRect(){
-//
-//        return rect;
-//    }
 
     public int getHealth() {
         return health;

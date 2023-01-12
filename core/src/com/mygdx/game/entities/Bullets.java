@@ -31,10 +31,10 @@ public class Bullets {
 
         if (bulletTexture == null){
             if (val == 1){
-                bulletTexture = new Texture("bullet.png");
+                bulletTexture = new Texture("elements/bullet.png");
             }
             else if (val == 2){
-                bulletTexture = new Texture("ultaBullet.png");
+                bulletTexture = new Texture("elements/ultaBullet.png");
             }
         }
     }

@@ -116,7 +116,6 @@ public class GameScreen implements Screen {
                 }
                 else {
                     tankToBeHit = tank1Obj;
-                    // update tankToBeHits position --> in object and rectangle
                     firingTank = tank2Obj;
                     tank = tank1Img;
                     tank.x = tank1Obj.getX();
@@ -135,8 +134,8 @@ public class GameScreen implements Screen {
 
         //  drawing bullets
         for (Bullets bullet : bullets) {
-            System.out.println("drawing bullets");
-            System.out.println(bullet.getX());
+//            System.out.println("drawing bullets");
+//            System.out.println(bullet.getX());
             game.batch.draw(bullet.getBulletTexture(), bullet.getX(), bullet.getY());
         }
 
