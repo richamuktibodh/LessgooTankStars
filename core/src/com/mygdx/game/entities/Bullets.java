@@ -2,15 +2,15 @@ package com.mygdx.game.entities;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
-
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 
 public class Bullets {
-    public static final int BULLET_SPEED = 11;
+    public static final int BULLET_SPEED = 10;
     public static final int BULLET_WIDTH = 20;
     public static final int BULLET_HEIGHT = 20;
-    public static final int defaultY = 300; // need to change this as y is constant
-    private Texture bulletTexture ;
+    public static final int defaultY = 125; // need to change this as y is constant
+    private Texture bulletTexture;
     private float xProjectile;
     private float yProjectile;
     private float x;

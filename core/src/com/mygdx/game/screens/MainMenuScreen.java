@@ -31,10 +31,10 @@ public class MainMenuScreen implements Screen {
         this.game = game;
         mySkin = new Skin(Gdx.files.internal("skin/glassy-ui.json"));
         backgroundImg = new Texture("backgrounds/MenuBG.png");
-        backgroundTexture = new TextureRegion(backgroundImg, 0, 0, 1400, 788);
+        backgroundTexture = new TextureRegion(backgroundImg, 0, 0, TankStars.WIDTH, TankStars.HEIGHT);
         logoImg = new Texture("backgrounds/logo.png");
         camera = new OrthographicCamera();
-        camera.setToOrtho(false, 1400, 788);
+        camera.setToOrtho(false, TankStars.WIDTH, TankStars.HEIGHT);
         // create stage and set it as input processor
         stage = new Stage(new ScreenViewport());
         Gdx.input.setInputProcessor(stage);
@@ -93,9 +93,9 @@ public class MainMenuScreen implements Screen {
         game.batch.setProjectionMatrix(camera.combined);
 
         game.batch.begin();
-        game.batch.draw(backgroundTexture, 0,0, 1400, 788);
-        game.font.draw(game.batch, "Welcome to TankStars!!! ", 100, 150);
-        game.font.draw(game.batch, "Tap anywhere to begin!", 100, 100);
+        game.batch.draw(backgroundTexture, 0,0, TankStars.WIDTH, TankStars.HEIGHT);
+//        game.font.draw(game.batch, "Welcome to TankStars!!! ", 100, 150);
+//        game.font.draw(game.batch, "Tap anywhere to begin!", 100, 100);
         game.batch.draw(logoImg, Gdx.graphics.getWidth()/2-logoImg.getWidth()/2, 600);
         game.batch.end();
         stage.act();

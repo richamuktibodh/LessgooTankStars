@@ -5,6 +5,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.mygdx.game.TankStars;
@@ -22,6 +23,8 @@ public class GameScreen implements Screen {
     private ArrayList<Bullets> bullets, bulletsToRemove;
     private ArrayList<Rectangle> bulletRects, bulletRectsToRemove;
     private OrthographicCamera camera;
+    private Texture backgroundImage;
+    private TextureRegion backgroundTexture;
     private float shootTimer = 0;
     private float tank1X, tank2X, tank1Y, tank2Y;
 
@@ -50,6 +53,8 @@ public class GameScreen implements Screen {
         // create the camera and the SpriteBatch
         camera = new OrthographicCamera();
         camera.setToOrtho(false, TankStars.WIDTH, TankStars.HEIGHT);
+        backgroundImage = new Texture(Gdx.files.internal("backgrounds/gameBG.png"));
+        backgroundTexture = new TextureRegion(backgroundImage, 0, 0, TankStars.WIDTH, TankStars.HEIGHT);
 
 
     }
@@ -71,12 +76,12 @@ public class GameScreen implements Screen {
         if (Gdx.input.isKeyPressed(Input.Keys.SPACE) && shootTimer >= SHOOT_WAIT_TIME) {
             shootTimer = 0;
             if (tankToBeHit == tank2Obj) {
-                bullets.add(new Bullets(firingTank.getX() + 200, 1));
-                bulletRects.add(new Rectangle(firingTank.getX() + 200, firingTank.getY(), Bullets.BULLET_WIDTH, Bullets.BULLET_HEIGHT));
+                bullets.add(new Bullets(firingTank.getX() + 100, 1));
+                bulletRects.add(new Rectangle(firingTank.getX() + 100, firingTank.getY(), Bullets.BULLET_WIDTH, Bullets.BULLET_HEIGHT));
             }
             else {
-                bullets.add(new Bullets(firingTank.getX() + 200, 2));
-                bulletRects.add(new Rectangle(firingTank.getX() + 200, firingTank.getY(), Bullets.BULLET_WIDTH, Bullets.BULLET_HEIGHT));
+                bullets.add(new Bullets(firingTank.getX() + 100, 2));
+                bulletRects.add(new Rectangle(firingTank.getX() + 100, firingTank.getY(), Bullets.BULLET_WIDTH, Bullets.BULLET_HEIGHT));
             }
 
         }
@@ -128,6 +133,9 @@ public class GameScreen implements Screen {
 
         game.batch.begin();
 //        System.out.println("in begin");
+        // drawing background
+        game.batch.draw(backgroundTexture, 0, 0, TankStars.WIDTH, TankStars.HEIGHT);
+
         // drawing tanks
         game.batch.draw(tank1Obj.getTankTexture(), tank1Obj.getX(), tank1Obj.getY());
         game.batch.draw(tank2Obj.getTankTexture(), tank2Obj.getX(), tank2Obj.getY());
