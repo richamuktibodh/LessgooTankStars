@@ -53,4 +53,7 @@ public class Tank {
         this.health = health;
     }
 
+    public void setTankTexture(Texture texture) {
+        this.tankTexture = texture;
+    }
 }

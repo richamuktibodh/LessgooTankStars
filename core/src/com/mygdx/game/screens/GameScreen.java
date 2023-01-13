@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.mygdx.game.TankStars;
 import com.mygdx.game.entities.Bullets;
@@ -55,6 +56,9 @@ public class GameScreen implements Screen {
         camera.setToOrtho(false, TankStars.WIDTH, TankStars.HEIGHT);
         backgroundImage = new Texture(Gdx.files.internal("backgrounds/gameBG.png"));
         backgroundTexture = new TextureRegion(backgroundImage, 0, 0, TankStars.WIDTH, TankStars.HEIGHT);
+//        game.font.getData().setScale(2, 2);
+        game.font.setColor(254f/255f, 208f/255f, 0,1);
+
 
 
     }
@@ -109,14 +113,12 @@ public class GameScreen implements Screen {
                     }
                 }
 
-//                if (tankToBeHit.getHealth() == 0) {
-//                    tankToBeHit.setTankTexture(new Texture("tank_destroyed.png"));
-                //}
-//                if (tankToBeHit.getHealth() == 0) {
-//                    game.setScreen(new GameOverScreen(game));
-//                    dispose();
-//                }
-                System.out.println("tank health: " + tankToBeHit.getHealth());
+                if (tankToBeHit.getHealth() == 0) {
+                    tankToBeHit.setTankTexture(new Texture("elements/rip.png"));
+                    game.setScreen(new GameOverScreen(game));
+                    dispose();
+                }
+//                System.out.println("tank health: " + tankToBeHit.getHealth());
                 if (tankToBeHit == tank1Obj) {
                     tankToBeHit = tank2Obj;
                     firingTank = tank1Obj;

@@ -52,8 +52,8 @@ public class GameOverScreen implements Screen {
         mainMenuButton.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y) {
-//                game.setScreen(new MainMenu(game));
-//                dispose();
+                game.setScreen(new MainMenuScreen(game));
+                dispose();
             }
         });
         stage.addActor(mainMenuButton);
@@ -71,9 +71,8 @@ public class GameOverScreen implements Screen {
         camera.update();
         game.batch.setProjectionMatrix(camera.combined);
         game.batch.begin();
-//        game.batch.draw(lmenu, 0, 0, 1400, 788);
         game.batch.draw(lmenu,Gdx.graphics.getWidth()/2 - lmenu.getWidth()/2,Gdx.graphics.getHeight()/2 - lmenu.getHeight()/2);
-        game.font.draw(game.batch, "GAME OVER", 600, 400);
+//        game.font.draw(game.batch, "GAME OVER", 600, 400);
         game.batch.end();
         stage.act();
         stage.draw();

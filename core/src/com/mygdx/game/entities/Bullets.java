@@ -6,7 +6,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 
 public class Bullets {
-    public static final int BULLET_SPEED = 10;
+    public static int BULLET_SPEED = 10;
     public static final int BULLET_WIDTH = 20;
     public static final int BULLET_HEIGHT = 20;
     public static final int defaultY = 350; // need to change this as y is constant
@@ -14,8 +14,8 @@ public class Bullets {
     private float xProjectile;
     private float yProjectile;
     private float x;
-
     private float y;
+    private float angle;
     private final int val;
     public boolean remove = false;
 
@@ -42,6 +42,7 @@ public class Bullets {
     public void update(float delta){
         if (this.val == 1){
 //            System.out.println("xProjectile update before: " + xProjectile + " yProjectile update before: " + yProjectile);
+            //yProjectile = ((tan(angle))*xProjectile - (10.0f * (xProjectile*xProjectile))/(BULLET_SPEED * BULLET_SPEED*cos(angle)*cos(angle)));
             xProjectile += BULLET_SPEED * delta;
             yProjectile  = (xProjectile - (10.0f * (xProjectile*xProjectile))/(BULLET_SPEED * BULLET_SPEED));
             x  += xProjectile;
@@ -72,6 +73,13 @@ public class Bullets {
 
     public float getY() {
         return y;
+    }
+    public static int getBulletSpeed() {
+        return BULLET_SPEED;
+    }
+
+    public static void setBulletSpeed(int bulletSpeed) {
+        BULLET_SPEED = bulletSpeed;
     }
 }
 
