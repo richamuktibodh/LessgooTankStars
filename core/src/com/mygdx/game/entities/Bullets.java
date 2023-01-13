@@ -4,9 +4,12 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
+import static java.lang.Math.cos;
+import static java.lang.Math.tan;
+
 
 public class Bullets {
-    public static int BULLET_SPEED = 10;
+    public int BULLET_SPEED = 17; // as each bullet object will have its own speed
     public static final int BULLET_WIDTH = 20;
     public static final int BULLET_HEIGHT = 20;
     public static final int defaultY = 350; // need to change this as y is constant
@@ -15,7 +18,8 @@ public class Bullets {
     private float yProjectile;
     private float x;
     private float y;
-    private float angle;
+
+    private float angle = 45,angleInRad;
     private final int val;
     public boolean remove = false;
 
@@ -27,7 +31,7 @@ public class Bullets {
         this.x = x ;
         this.y = defaultY ;
         this.val = val;
-
+        angleInRad = (float) Math.toRadians(angle);
 
         if (bulletTexture == null){
             if (val == 1){
@@ -42,19 +46,18 @@ public class Bullets {
     public void update(float delta){
         if (this.val == 1){
 //            System.out.println("xProjectile update before: " + xProjectile + " yProjectile update before: " + yProjectile);
-            //yProjectile = ((tan(angle))*xProjectile - (10.0f * (xProjectile*xProjectile))/(BULLET_SPEED * BULLET_SPEED*cos(angle)*cos(angle)));
+            yProjectile = (float) ((tan(angleInRad))*xProjectile - (10.0f * (xProjectile*xProjectile))/(BULLET_SPEED * BULLET_SPEED*cos(angleInRad)*cos(angleInRad)));
             xProjectile += BULLET_SPEED * delta;
-            yProjectile  = (xProjectile - (10.0f * (xProjectile*xProjectile))/(BULLET_SPEED * BULLET_SPEED));
+//            yProjectile  = (xProjectile - (10.0f * (xProjectile*xProjectile))/(BULLET_SPEED * BULLET_SPEED));
             x  += xProjectile;
             y  += yProjectile;
-//            System.out.println("xProjectile after update: " + xProjectile + " yProjectile after update: " + yProjectile);
             if (x > Gdx.graphics.getWidth()){ // changed this
                 remove = true;
             }
         }
         else if (this.val == 2){
             xProjectile += BULLET_SPEED * delta;
-            yProjectile = (xProjectile- ((10.0f/(BULLET_SPEED*BULLET_SPEED)) * (xProjectile*xProjectile)));
+            yProjectile = (float) ((tan(angleInRad))*xProjectile - (10.0f * (xProjectile*xProjectile))/(BULLET_SPEED * BULLET_SPEED*cos(angleInRad)*cos(angleInRad)));
             x = x - xProjectile;
             y += yProjectile;
             if (x <0){
@@ -74,12 +77,20 @@ public class Bullets {
     public float getY() {
         return y;
     }
-    public static int getBulletSpeed() {
+    public int getBulletSpeed() {
         return BULLET_SPEED;
     }
 
-    public static void setBulletSpeed(int bulletSpeed) {
+    public void setBulletSpeed(int bulletSpeed) {
         BULLET_SPEED = bulletSpeed;
+    }
+
+    public float getAngle() {
+        return angle;
+    }
+
+    public void setAngle(float angle) {
+        this.angle = angle;
     }
 }
 
