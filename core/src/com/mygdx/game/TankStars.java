@@ -11,6 +11,7 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import com.mygdx.game.screens.GameOverScreen;
 import com.mygdx.game.screens.GameScreen;
 import com.mygdx.game.screens.MainMenuScreen;
+import com.mygdx.game.screens.PauseScreen;
 
 public class TankStars extends Game {
 	public static final int WIDTH = 1400;

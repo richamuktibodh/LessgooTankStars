@@ -7,6 +7,11 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.mygdx.game.TankStars;
@@ -26,9 +31,10 @@ public class GameScreen implements Screen {
     private OrthographicCamera camera;
     private Texture backgroundImage;
     private TextureRegion backgroundTexture;
-    private float shootTimer = 0;
+    private float shootTimer = 0,angle = 45;
     private float tank1X, tank2X, tank1Y, tank2Y;
-
+    private ImageButton pauseButton;
+    private Stage stage;
 
 
     public GameScreen(final TankStars game) {
@@ -58,8 +64,20 @@ public class GameScreen implements Screen {
         backgroundTexture = new TextureRegion(backgroundImage, 0, 0, TankStars.WIDTH, TankStars.HEIGHT);
 //        game.font.getData().setScale(2, 2);
         game.font.setColor(254f/255f, 208f/255f, 0,1);
-
-
+        // stuff for pause button
+        // making an image button
+        pauseButton = new ImageButton(new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal("buttons/pause.png")))));
+        pauseButton.setPosition(TankStars.WIDTH - pauseButton.getWidth(), TankStars.HEIGHT - pauseButton.getHeight());
+        stage = new Stage();
+        Gdx.input.setInputProcessor(stage);
+        pauseButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                game.setScreen(new PauseScreen(game));
+                dispose();
+            }
+        });
+        stage.addActor(pauseButton);
 
     }
 
@@ -76,16 +94,30 @@ public class GameScreen implements Screen {
 
         // bullets
         shootTimer += delta;
+        // setting angle
+//        if (Gdx.input.isKeyPressed(Input.Keys.UP))
+//        {
+//            angle += 0.1;
+//        }
+//
+//        else if (Gdx.input.isKeyPressed(Input.Keys.DOWN))
+//        {
+//            angle -= 0.1;
+//        }
+//        System.out.println("Angle " + angle);
+
         // moving bullets
         if (Gdx.input.isKeyPressed(Input.Keys.SPACE) && shootTimer >= SHOOT_WAIT_TIME) {
             shootTimer = 0;
             if (tankToBeHit == tank2Obj) {
                 bullets.add(new Bullets(firingTank.getX() + 100, 1));
                 bulletRects.add(new Rectangle(firingTank.getX() + 100, firingTank.getY(), Bullets.BULLET_WIDTH, Bullets.BULLET_HEIGHT));
+                bullets.get(bullets.size() - 1).setAngle(angle);
             }
             else {
                 bullets.add(new Bullets(firingTank.getX() + 100, 2));
                 bulletRects.add(new Rectangle(firingTank.getX() + 100, firingTank.getY(), Bullets.BULLET_WIDTH, Bullets.BULLET_HEIGHT));
+                bullets.get(bullets.size()-1).setAngle(angle);
             }
 
         }
@@ -148,7 +180,7 @@ public class GameScreen implements Screen {
 
         //  drawing bullets
         for (Bullets bullet : bullets) {
-//            System.out.println("drawing bullets");
+            System.out.println("drawing bullets");
 //            System.out.println(bullet.getX());
             game.batch.draw(bullet.getBulletTexture(), bullet.getX(), bullet.getY());
         }
@@ -175,6 +207,8 @@ public class GameScreen implements Screen {
         game.font.draw(game.batch, "Tank 1 Health: " + tank1Obj.getHealth(), 0, 50);
         game.font.draw(game.batch, "Tank 2 Health: " + tank2Obj.getHealth(), TankStars.WIDTH - 200, 50);
         game.batch.end();
+        stage.act();
+        stage.draw();
 
     }
 
