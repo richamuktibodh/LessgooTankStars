@@ -9,7 +9,7 @@ public class Bullets {
     public static final int BULLET_SPEED = 10;
     public static final int BULLET_WIDTH = 20;
     public static final int BULLET_HEIGHT = 20;
-    public static final int defaultY = 125; // need to change this as y is constant
+    public static final int defaultY = 350; // need to change this as y is constant
     private Texture bulletTexture;
     private float xProjectile;
     private float yProjectile;

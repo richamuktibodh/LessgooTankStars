@@ -41,8 +41,8 @@ public class GameScreen implements Screen {
         tankToBeHit = tank2Obj;
         firingTank = tank1Obj;
         // create rectangles to represent tanks
-        tank1Img = new Rectangle(tank1X, tank1Y, tank1Obj.getTankTexture().getWidth(), tank1Obj.getTankTexture().getHeight());
-        tank2Img = new Rectangle(tank2X, tank2Y, tank2Obj.getTankTexture().getWidth(), tank2Obj.getTankTexture().getHeight());
+        tank1Img = new Rectangle(tank1Obj.getX(), tank1Obj.getY(), 150, 150);
+        tank2Img = new Rectangle(tank2Obj.getX(), tank2Obj.getY(), 150, 150);
         // initially tank is to check collision which is tank2
         tank = tank2Img;
         bullets = new ArrayList<Bullets>();
@@ -96,15 +96,19 @@ public class GameScreen implements Screen {
 
         }
 
-        // checking collision between bullets and tanks --> have to add collision with ground and bullet gone out of screen
+        // checking when to remove bullet from screen
         // assuming after a collision with the tank, the turn switches
         for (int i = 0; i < bullets.size(); i++) {
-            if (bulletRects.get(i).overlaps(tank)) {
+            if (bulletRects.get(i).overlaps(tank) || bullets.get(i).getX() < 0 || bullets.get(i).getX() > TankStars.WIDTH || bullets.get(i).getY() < 250 || bullets.get(i).getY() > TankStars.HEIGHT) {
                 bulletsToRemove.add(bullets.get(i));
                 bulletRectsToRemove.add(bulletRects.get(i));
-                if (tankToBeHit.getHealth() > 0) {
-                    tankToBeHit.setHealth(tankToBeHit.getHealth() - 1);
+                // if collision with tank
+                if (bulletRects.get(i).overlaps(tank)){
+                    if (tankToBeHit.getHealth() > 0) {
+                        tankToBeHit.setHealth(tankToBeHit.getHealth() - 1);
+                    }
                 }
+
 //                if (tankToBeHit.getHealth() == 0) {
 //                    tankToBeHit.setTankTexture(new Texture("tank_destroyed.png"));
                 //}
@@ -165,6 +169,9 @@ public class GameScreen implements Screen {
                 firingTank.setX(TankStars.WIDTH - firingTank.getTankTexture().getWidth());
             }
         }
+
+        game.font.draw(game.batch, "Tank 1 Health: " + tank1Obj.getHealth(), 0, 50);
+        game.font.draw(game.batch, "Tank 2 Health: " + tank2Obj.getHealth(), TankStars.WIDTH - 200, 50);
         game.batch.end();
 
     }

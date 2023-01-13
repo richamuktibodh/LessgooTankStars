@@ -6,6 +6,7 @@ import com.mygdx.game.TankStars;
 public class Tank {
 //    public static final int defaultY = 350; // need to change this as y is constant
 
+    public static final int TANK_Y_POSITION = 250;
     private Texture tankTexture ;
     private float x;
     private float y;
@@ -16,7 +17,7 @@ public class Tank {
 
     public Tank(float x, TankStars game,int val){
         this.x = x;
-//        this.y = defaultY;
+        this.y = TANK_Y_POSITION;
         this.game = game;
         this.val = val;
         if (tankTexture == null){
