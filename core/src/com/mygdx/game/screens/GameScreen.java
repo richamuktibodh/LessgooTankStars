@@ -3,17 +3,25 @@ package com.mygdx.game.screens;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.mygdx.game.TankStars;
 import com.mygdx.game.entities.Bullets;
+import com.mygdx.game.entities.Explosion;
 import com.mygdx.game.entities.Tank;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 
 public class GameScreen implements Screen {
     public static final int TANK_SPEED = 300;
@@ -24,11 +32,14 @@ public class GameScreen implements Screen {
     private ArrayList<Bullets> bullets, bulletsToRemove;
     private ArrayList<Rectangle> bulletRects, bulletRectsToRemove;
     private OrthographicCamera camera;
-    private Texture backgroundImage;
+    private Texture backgroundImage,explosionTexture;
     private TextureRegion backgroundTexture;
-    private float shootTimer = 0;
+    private float shootTimer = 0,angle = 45, delay = 0;
     private float tank1X, tank2X, tank1Y, tank2Y;
-
+    private ImageButton pauseButton;
+    private Stage stage;
+    private LinkedList<Explosion> explosionList;
+    private Sound explosionSound,shootSound,tankMovingSound;
 
 
     public GameScreen(final TankStars game) {
@@ -50,7 +61,7 @@ public class GameScreen implements Screen {
         bulletsToRemove = new ArrayList<Bullets>();
         bulletRects = new ArrayList<Rectangle>();
         bulletRectsToRemove = new ArrayList<Rectangle>();
-
+        explosionList = new LinkedList<Explosion>();
         // create the camera and the SpriteBatch
         camera = new OrthographicCamera();
         camera.setToOrtho(false, TankStars.WIDTH, TankStars.HEIGHT);
@@ -58,9 +69,38 @@ public class GameScreen implements Screen {
         backgroundTexture = new TextureRegion(backgroundImage, 0, 0, TankStars.WIDTH, TankStars.HEIGHT);
 //        game.font.getData().setScale(2, 2);
         game.font.setColor(254f/255f, 208f/255f, 0,1);
+        // stuff for pause button
+        // making an image button
+        pauseButton = new ImageButton(new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal("buttons/pause.png")))));
+        pauseButton.setPosition(TankStars.WIDTH - pauseButton.getWidth(), TankStars.HEIGHT - pauseButton.getHeight());
+        stage = new Stage();
+        Gdx.input.setInputProcessor(stage);
+        pauseButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                game.setScreen(new PauseScreen(game));
+                dispose();
+            }
+        });
+        stage.addActor(pauseButton);
 
+        explosionTexture = new Texture(Gdx.files.internal("elements/explosion.png"));
+        explosionSound = Gdx.audio.newSound(Gdx.files.internal("sounds/explosion.wav"));
+        shootSound = Gdx.audio.newSound(Gdx.files.internal("sounds/gunshot.mp3"));
+        tankMovingSound = Gdx.audio.newSound(Gdx.files.internal("sounds/tankmoving.mp3"));
 
+    }
 
+    private void updateAndRenderExplosion(float deltaTime) {
+        for (Explosion explosion : explosionList) {
+            explosion.update(deltaTime);
+            if (explosion.isFinished()) {
+                explosionList.remove(explosion);
+            }
+            else{
+                explosion.draw(game.batch);
+            }
+        }
     }
 
     @Override
@@ -76,16 +116,31 @@ public class GameScreen implements Screen {
 
         // bullets
         shootTimer += delta;
+        // setting angle
+//        if (Gdx.input.isKeyPressed(Input.Keys.UP))
+//        {
+//            angle += 0.1;
+//        }
+//
+//        else if (Gdx.input.isKeyPressed(Input.Keys.DOWN))
+//        {
+//            angle -= 0.1;
+//        }
+//        System.out.println("Angle " + angle);
+
         // moving bullets
         if (Gdx.input.isKeyPressed(Input.Keys.SPACE) && shootTimer >= SHOOT_WAIT_TIME) {
             shootTimer = 0;
+            shootSound.play();
             if (tankToBeHit == tank2Obj) {
                 bullets.add(new Bullets(firingTank.getX() + 100, 1));
                 bulletRects.add(new Rectangle(firingTank.getX() + 100, firingTank.getY(), Bullets.BULLET_WIDTH, Bullets.BULLET_HEIGHT));
+                bullets.get(bullets.size() - 1).setAngle(angle);
             }
             else {
                 bullets.add(new Bullets(firingTank.getX() + 100, 2));
                 bulletRects.add(new Rectangle(firingTank.getX() + 100, firingTank.getY(), Bullets.BULLET_WIDTH, Bullets.BULLET_HEIGHT));
+                bullets.get(bullets.size()-1).setAngle(angle);
             }
 
         }
@@ -100,6 +155,10 @@ public class GameScreen implements Screen {
 
         }
 
+        if (firingTank.getHealth() == 0 && delay >= Gdx.graphics.getDeltaTime()) {
+            game.setScreen(new GameOverScreen(game));
+        }
+
         // checking when to remove bullet from screen
         // assuming after a collision with the tank, the turn switches
         for (int i = 0; i < bullets.size(); i++) {
@@ -108,6 +167,9 @@ public class GameScreen implements Screen {
                 bulletRectsToRemove.add(bulletRects.get(i));
                 // if collision with tank
                 if (bulletRects.get(i).overlaps(tank)){
+                    // for drawing explosion
+                    explosionList.add(new Explosion(explosionTexture, tank,1f));
+                    explosionSound.play();
                     if (tankToBeHit.getHealth() > 0) {
                         tankToBeHit.setHealth(tankToBeHit.getHealth() - 1);
                     }
@@ -115,10 +177,12 @@ public class GameScreen implements Screen {
 
                 if (tankToBeHit.getHealth() == 0) {
                     tankToBeHit.setTankTexture(new Texture("elements/rip.png"));
-                    game.setScreen(new GameOverScreen(game));
-                    dispose();
+                    delay += Gdx.graphics.getDeltaTime();
+//                    game.setScreen(new GameOverScreen(game));
+//                    dispose();
+
                 }
-//                System.out.println("tank health: " + tankToBeHit.getHealth());
+
                 if (tankToBeHit == tank1Obj) {
                     tankToBeHit = tank2Obj;
                     firingTank = tank1Obj;
@@ -138,24 +202,26 @@ public class GameScreen implements Screen {
 
 
         game.batch.begin();
-//        System.out.println("in begin");
         // drawing background
         game.batch.draw(backgroundTexture, 0, 0, TankStars.WIDTH, TankStars.HEIGHT);
+
 
         // drawing tanks
         game.batch.draw(tank1Obj.getTankTexture(), tank1Obj.getX(), tank1Obj.getY());
         game.batch.draw(tank2Obj.getTankTexture(), tank2Obj.getX(), tank2Obj.getY());
 
+        // drawing explosion
+        updateAndRenderExplosion(delta);
+
         //  drawing bullets
         for (Bullets bullet : bullets) {
-//            System.out.println("drawing bullets");
-//            System.out.println(bullet.getX());
             game.batch.draw(bullet.getBulletTexture(), bullet.getX(), bullet.getY());
         }
 
         // for movement of tanks
         if (Gdx.input.isKeyPressed(Input.Keys.LEFT))
         {
+            tankMovingSound.play();
             firingTank.setX(firingTank.getX() - TANK_SPEED * Gdx.graphics.getDeltaTime());
             if (firingTank.getX() < 0) // boundary so that tank doesn't go out of screen
             {
@@ -175,6 +241,8 @@ public class GameScreen implements Screen {
         game.font.draw(game.batch, "Tank 1 Health: " + tank1Obj.getHealth(), 0, 50);
         game.font.draw(game.batch, "Tank 2 Health: " + tank2Obj.getHealth(), TankStars.WIDTH - 200, 50);
         game.batch.end();
+        stage.act();
+        stage.draw();
 
     }
 
@@ -201,7 +269,12 @@ public class GameScreen implements Screen {
 
     @Override
     public void dispose() {
-
+        backgroundImage.dispose();
+        explosionSound.dispose();
+        shootSound.dispose();
+        tank1Obj.getTankTexture().dispose();
+        tank2Obj.getTankTexture().dispose();
+        stage.dispose();
     }
 }
 

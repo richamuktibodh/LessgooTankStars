@@ -13,7 +13,7 @@ public class Tank {
     public boolean remove = false;
     private TankStars game;
     private int val;
-    private int health = 3;
+    private int health = 1;
 
     public Tank(float x, TankStars game,int val){
         this.x = x;
