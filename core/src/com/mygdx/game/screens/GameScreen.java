@@ -3,6 +3,7 @@ package com.mygdx.game.screens;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -38,6 +39,7 @@ public class GameScreen implements Screen {
     private ImageButton pauseButton;
     private Stage stage;
     private LinkedList<Explosion> explosionList;
+    private Sound explosionSound,shootSound,tankMovingSound;
 
 
     public GameScreen(final TankStars game) {
@@ -83,6 +85,9 @@ public class GameScreen implements Screen {
         stage.addActor(pauseButton);
 
         explosionTexture = new Texture(Gdx.files.internal("elements/explosion.png"));
+        explosionSound = Gdx.audio.newSound(Gdx.files.internal("sounds/explosion.wav"));
+        shootSound = Gdx.audio.newSound(Gdx.files.internal("sounds/gunshot.mp3"));
+        tankMovingSound = Gdx.audio.newSound(Gdx.files.internal("sounds/tankmoving.mp3"));
 
     }
 
@@ -128,6 +133,7 @@ public class GameScreen implements Screen {
         // moving bullets
         if (Gdx.input.isKeyPressed(Input.Keys.SPACE) && shootTimer >= SHOOT_WAIT_TIME) {
             shootTimer = 0;
+            shootSound.play();
             if (tankToBeHit == tank2Obj) {
                 bullets.add(new Bullets(firingTank.getX() + 100, 1));
                 bulletRects.add(new Rectangle(firingTank.getX() + 100, firingTank.getY(), Bullets.BULLET_WIDTH, Bullets.BULLET_HEIGHT));
@@ -162,14 +168,17 @@ public class GameScreen implements Screen {
                 if (bulletRects.get(i).overlaps(tank)){
                     // for drawing explosion
                     explosionList.add(new Explosion(explosionTexture, tank,1f));
-//                    explosionList.remove();
+                    explosionSound.play();
                     if (tankToBeHit.getHealth() > 0) {
                         tankToBeHit.setHealth(tankToBeHit.getHealth() - 1);
                     }
                 }
 
                 if (tankToBeHit.getHealth() == 0) {
-//                    tankToBeHit.setTankTexture(new Texture("elements/rip.png"));
+                    tankToBeHit.setTankTexture(new Texture("elements/rip.png"));
+//                    game.batch.begin();
+//                    game.batch.draw(tankToBeHit.getTankTexture(), tankToBeHit.getX(), tankToBeHit.getY());
+//                    game.batch.end();
                     game.setScreen(new GameOverScreen(game));
                     dispose();
                 }
@@ -197,13 +206,17 @@ public class GameScreen implements Screen {
         // drawing background
         game.batch.draw(backgroundTexture, 0, 0, TankStars.WIDTH, TankStars.HEIGHT);
 
-        if (tankToBeHit.getHealth() == 0) {
-            tankToBeHit.setTankTexture(new Texture("elements/rip.png"));
-        }
+//        if (tankToBeHit.getHealth() == 0) {
+//
+//        }
 
         // drawing tanks
-        game.batch.draw(tank1Obj.getTankTexture(), tank1Obj.getX(), tank1Obj.getY());
-        game.batch.draw(tank2Obj.getTankTexture(), tank2Obj.getX(), tank2Obj.getY());
+        if (tankToBeHit.getHealth() >0)
+        {
+            game.batch.draw(tank1Obj.getTankTexture(), tank1Obj.getX(), tank1Obj.getY());
+            game.batch.draw(tank2Obj.getTankTexture(), tank2Obj.getX(), tank2Obj.getY());
+        }
+
 
         // drawing explosion
         updateAndRenderExplosion(delta);
@@ -218,6 +231,7 @@ public class GameScreen implements Screen {
         // for movement of tanks
         if (Gdx.input.isKeyPressed(Input.Keys.LEFT))
         {
+            tankMovingSound.play();
             firingTank.setX(firingTank.getX() - TANK_SPEED * Gdx.graphics.getDeltaTime());
             if (firingTank.getX() < 0) // boundary so that tank doesn't go out of screen
             {
@@ -265,7 +279,12 @@ public class GameScreen implements Screen {
 
     @Override
     public void dispose() {
-
+        backgroundImage.dispose();
+        explosionSound.dispose();
+        shootSound.dispose();
+        tank1Obj.getTankTexture().dispose();
+        tank2Obj.getTankTexture().dispose();
+        stage.dispose();
     }
 }
 
