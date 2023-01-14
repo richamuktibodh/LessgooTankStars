@@ -16,9 +16,11 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.mygdx.game.TankStars;
 import com.mygdx.game.entities.Bullets;
+import com.mygdx.game.entities.Explosion;
 import com.mygdx.game.entities.Tank;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 
 public class GameScreen implements Screen {
     public static final int TANK_SPEED = 300;
@@ -29,12 +31,13 @@ public class GameScreen implements Screen {
     private ArrayList<Bullets> bullets, bulletsToRemove;
     private ArrayList<Rectangle> bulletRects, bulletRectsToRemove;
     private OrthographicCamera camera;
-    private Texture backgroundImage;
+    private Texture backgroundImage,explosionTexture;
     private TextureRegion backgroundTexture;
     private float shootTimer = 0,angle = 45;
     private float tank1X, tank2X, tank1Y, tank2Y;
     private ImageButton pauseButton;
     private Stage stage;
+    private LinkedList<Explosion> explosionList;
 
 
     public GameScreen(final TankStars game) {
@@ -56,7 +59,7 @@ public class GameScreen implements Screen {
         bulletsToRemove = new ArrayList<Bullets>();
         bulletRects = new ArrayList<Rectangle>();
         bulletRectsToRemove = new ArrayList<Rectangle>();
-
+        explosionList = new LinkedList<Explosion>();
         // create the camera and the SpriteBatch
         camera = new OrthographicCamera();
         camera.setToOrtho(false, TankStars.WIDTH, TankStars.HEIGHT);
@@ -79,6 +82,22 @@ public class GameScreen implements Screen {
         });
         stage.addActor(pauseButton);
 
+        explosionTexture = new Texture(Gdx.files.internal("elements/explosion.png"));
+
+    }
+
+    private void updateAndRenderExplosion(float deltaTime) {
+        for (Explosion explosion : explosionList) {
+            explosion.update(deltaTime);
+            if (explosion.isFinished()) {
+                explosionList.remove(explosion);
+//                break;
+            }
+            else{
+                System.out.println("drawing explosion");
+                explosion.draw(game.batch);
+            }
+        }
     }
 
     @Override
@@ -132,6 +151,11 @@ public class GameScreen implements Screen {
 
         }
 
+        game.batch.begin();
+//        System.out.println("in begin");
+        // drawing background
+        game.batch.draw(backgroundTexture, 0, 0, TankStars.WIDTH, TankStars.HEIGHT);
+
         // checking when to remove bullet from screen
         // assuming after a collision with the tank, the turn switches
         for (int i = 0; i < bullets.size(); i++) {
@@ -140,6 +164,10 @@ public class GameScreen implements Screen {
                 bulletRectsToRemove.add(bulletRects.get(i));
                 // if collision with tank
                 if (bulletRects.get(i).overlaps(tank)){
+                    // for explosion
+                    explosionList.add(new Explosion(explosionTexture, tank,1f));
+                    updateAndRenderExplosion(delta);
+                    explosionList.remove();
                     if (tankToBeHit.getHealth() > 0) {
                         tankToBeHit.setHealth(tankToBeHit.getHealth() - 1);
                     }
@@ -169,10 +197,7 @@ public class GameScreen implements Screen {
         bullets.removeAll(bulletsToRemove);
 
 
-        game.batch.begin();
-//        System.out.println("in begin");
-        // drawing background
-        game.batch.draw(backgroundTexture, 0, 0, TankStars.WIDTH, TankStars.HEIGHT);
+
 
         // drawing tanks
         game.batch.draw(tank1Obj.getTankTexture(), tank1Obj.getX(), tank1Obj.getY());
@@ -180,7 +205,7 @@ public class GameScreen implements Screen {
 
         //  drawing bullets
         for (Bullets bullet : bullets) {
-            System.out.println("drawing bullets");
+//            System.out.println("drawing bullets");
 //            System.out.println(bullet.getX());
             game.batch.draw(bullet.getBulletTexture(), bullet.getX(), bullet.getY());
         }
