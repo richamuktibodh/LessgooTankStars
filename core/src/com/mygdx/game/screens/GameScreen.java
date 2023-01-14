@@ -34,7 +34,7 @@ public class GameScreen implements Screen {
     private OrthographicCamera camera;
     private Texture backgroundImage,explosionTexture;
     private TextureRegion backgroundTexture;
-    private float shootTimer = 0,angle = 45;
+    private float shootTimer = 0,angle = 45, delay = 0;
     private float tank1X, tank2X, tank1Y, tank2Y;
     private ImageButton pauseButton;
     private Stage stage;
@@ -96,10 +96,8 @@ public class GameScreen implements Screen {
             explosion.update(deltaTime);
             if (explosion.isFinished()) {
                 explosionList.remove(explosion);
-//                break;
             }
             else{
-                System.out.println("drawing explosion");
                 explosion.draw(game.batch);
             }
         }
@@ -157,6 +155,9 @@ public class GameScreen implements Screen {
 
         }
 
+        if (firingTank.getHealth() == 0 && delay >= Gdx.graphics.getDeltaTime()) {
+            game.setScreen(new GameOverScreen(game));
+        }
 
         // checking when to remove bullet from screen
         // assuming after a collision with the tank, the turn switches
@@ -176,13 +177,12 @@ public class GameScreen implements Screen {
 
                 if (tankToBeHit.getHealth() == 0) {
                     tankToBeHit.setTankTexture(new Texture("elements/rip.png"));
-//                    game.batch.begin();
-//                    game.batch.draw(tankToBeHit.getTankTexture(), tankToBeHit.getX(), tankToBeHit.getY());
-//                    game.batch.end();
-                    game.setScreen(new GameOverScreen(game));
-                    dispose();
+                    delay += Gdx.graphics.getDeltaTime();
+//                    game.setScreen(new GameOverScreen(game));
+//                    dispose();
+
                 }
-//                System.out.println("tank health: " + tankToBeHit.getHealth());
+
                 if (tankToBeHit == tank1Obj) {
                     tankToBeHit = tank2Obj;
                     firingTank = tank1Obj;
@@ -202,29 +202,19 @@ public class GameScreen implements Screen {
 
 
         game.batch.begin();
-//        System.out.println("in begin");
         // drawing background
         game.batch.draw(backgroundTexture, 0, 0, TankStars.WIDTH, TankStars.HEIGHT);
 
-//        if (tankToBeHit.getHealth() == 0) {
-//
-//        }
 
         // drawing tanks
-        if (tankToBeHit.getHealth() >0)
-        {
-            game.batch.draw(tank1Obj.getTankTexture(), tank1Obj.getX(), tank1Obj.getY());
-            game.batch.draw(tank2Obj.getTankTexture(), tank2Obj.getX(), tank2Obj.getY());
-        }
-
+        game.batch.draw(tank1Obj.getTankTexture(), tank1Obj.getX(), tank1Obj.getY());
+        game.batch.draw(tank2Obj.getTankTexture(), tank2Obj.getX(), tank2Obj.getY());
 
         // drawing explosion
         updateAndRenderExplosion(delta);
 
         //  drawing bullets
         for (Bullets bullet : bullets) {
-//            System.out.println("drawing bullets");
-//            System.out.println(bullet.getX());
             game.batch.draw(bullet.getBulletTexture(), bullet.getX(), bullet.getY());
         }
 

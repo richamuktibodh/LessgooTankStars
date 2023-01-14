@@ -22,7 +22,7 @@ public class Explosion {
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
                 frames[index] = textureRegion[i][j];
-                System.out.println("index: " + index);
+//                System.out.println("index: " + index);
                 index++;
             }
         }
