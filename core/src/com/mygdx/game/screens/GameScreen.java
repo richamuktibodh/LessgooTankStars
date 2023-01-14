@@ -151,10 +151,6 @@ public class GameScreen implements Screen {
 
         }
 
-        game.batch.begin();
-//        System.out.println("in begin");
-        // drawing background
-        game.batch.draw(backgroundTexture, 0, 0, TankStars.WIDTH, TankStars.HEIGHT);
 
         // checking when to remove bullet from screen
         // assuming after a collision with the tank, the turn switches
@@ -164,17 +160,16 @@ public class GameScreen implements Screen {
                 bulletRectsToRemove.add(bulletRects.get(i));
                 // if collision with tank
                 if (bulletRects.get(i).overlaps(tank)){
-                    // for explosion
+                    // for drawing explosion
                     explosionList.add(new Explosion(explosionTexture, tank,1f));
-                    updateAndRenderExplosion(delta);
-                    explosionList.remove();
+//                    explosionList.remove();
                     if (tankToBeHit.getHealth() > 0) {
                         tankToBeHit.setHealth(tankToBeHit.getHealth() - 1);
                     }
                 }
 
                 if (tankToBeHit.getHealth() == 0) {
-                    tankToBeHit.setTankTexture(new Texture("elements/rip.png"));
+//                    tankToBeHit.setTankTexture(new Texture("elements/rip.png"));
                     game.setScreen(new GameOverScreen(game));
                     dispose();
                 }
@@ -197,11 +192,21 @@ public class GameScreen implements Screen {
         bullets.removeAll(bulletsToRemove);
 
 
+        game.batch.begin();
+//        System.out.println("in begin");
+        // drawing background
+        game.batch.draw(backgroundTexture, 0, 0, TankStars.WIDTH, TankStars.HEIGHT);
 
+        if (tankToBeHit.getHealth() == 0) {
+            tankToBeHit.setTankTexture(new Texture("elements/rip.png"));
+        }
 
         // drawing tanks
         game.batch.draw(tank1Obj.getTankTexture(), tank1Obj.getX(), tank1Obj.getY());
         game.batch.draw(tank2Obj.getTankTexture(), tank2Obj.getX(), tank2Obj.getY());
+
+        // drawing explosion
+        updateAndRenderExplosion(delta);
 
         //  drawing bullets
         for (Bullets bullet : bullets) {
