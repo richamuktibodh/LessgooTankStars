@@ -78,7 +78,7 @@ public class GameScreen implements Screen {
         pauseButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                game.setScreen(new PauseScreen(game));
+                game.setScreen(new PauseScreen(game,tank1Obj,tank2Obj));
                 dispose();
             }
         });

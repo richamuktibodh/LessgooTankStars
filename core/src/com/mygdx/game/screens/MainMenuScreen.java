@@ -60,8 +60,8 @@ public class MainMenuScreen implements Screen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
 //                NewGame newGame = new NewGame();
-//                game.setScreen(new Player1ChooseTank(game,newGame));
-//                dispose();
+                game.setScreen(new Player1ChooseTank(game));
+                dispose();
             }
         });
 

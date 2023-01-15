@@ -11,6 +11,12 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.mygdx.game.TankStars;
+import com.mygdx.game.entities.Tank;
+
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 
 public class PauseScreen implements Screen {
     private final TankStars game;
@@ -21,9 +27,12 @@ public class PauseScreen implements Screen {
     private Button saveButton, resumeButton, mainMenuButton;
     private Texture pmenu;
     private OrthographicCamera camera;
+    private Tank t1, t2;
 
-    public PauseScreen(final TankStars game) {
+    public PauseScreen(final TankStars game, final Tank t1, final Tank t2) {
         this.game = game;
+        this.t1 = t1;
+        this.t2 = t2;
         mySkin = new Skin(Gdx.files.internal("skin/glassy-ui.json"));
         pmenu = new Texture("backgrounds/pmenu.png");
         camera = new OrthographicCamera();
@@ -35,6 +44,31 @@ public class PauseScreen implements Screen {
         saveButton = new TextButton("SAVE",mySkin,"small");
         saveButton.setSize(col_width*2,row_height);
         saveButton.setPosition(Gdx.graphics.getWidth()/2 - saveButton.getWidth()/2 ,Gdx.graphics.getHeight()/2 - saveButton.getHeight()/2 + 170);
+        saveButton.addListener(new ChangeListener() { // stuff to change when button is pressed
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                // write important info to file
+//                FileWriter fw;
+//                try {
+//                    fw = new FileWriter("saved.txt",true);
+//                } catch (IOException e) {
+//                    throw new RuntimeException(e);
+//                }
+//                PrintWriter out = new PrintWriter(fw);
+                PrintWriter out;
+                try {
+                    out = new PrintWriter("saved.txt");
+                } catch (FileNotFoundException e) {
+                    throw new RuntimeException(e);
+                }
+//                out.println(t1.getHealth() +  " "+ t1.getX() + " "+ t1.getY() + " " + t2.getHealth() + " " + t2.getX() + " " + t2.getY());
+                out.println("hi");
+                // Close the file.
+                out.close();
+//                game.setScreen(new MainMenuScreen(game));
+//                dispose();
+            }
+        });
         stage.addActor(saveButton);
         resumeButton = new TextButton("RESUME",mySkin,"small");
         resumeButton.setSize(col_width*2,row_height);
